@@ -143,7 +143,7 @@ def _validate_bank_add_metadata() -> t.Optional[BankedContentMetadata]:
 
 
 @bp.route("/bank/<bank_name>/content/<content_id>", methods=["GET"])
-def bank_get_content(bank_name: str, content_id: int):
+def bank_get_content(bank_name: str, content_id: int): -> BankContentResponse:
     """
     Get content from a bank by ID.
 

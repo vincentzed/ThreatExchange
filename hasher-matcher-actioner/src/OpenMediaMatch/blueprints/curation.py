@@ -182,7 +182,7 @@ def bank_get_content(bank_name: str, content_id: int):
         if signal_type not in signal_type_cfgs:
             abort(400, f"No such signal type '{signal_type}'")
 
-    content = storage.bank_content_get([content_id], signal_type)
+    content = storage.bank_content_get([content_id], signal_type=signal_type)
     if not content:
         abort(404, f"content '{content_id}' not found")
 

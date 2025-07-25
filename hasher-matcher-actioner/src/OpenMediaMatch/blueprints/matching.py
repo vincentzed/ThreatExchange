@@ -128,17 +128,32 @@ def raw_lookup():
      * Signal value (the hash)
      * Optional list of banks to restrict search to
      * Optional include_distance (bool) whether or not to return distance values on match
+     * Optional include_matching_hash (bool) whether to return the original matching hash in response
     Output:
+     * Request matching hash (boolean), if the matching hash is desire
      * List of matching with content_id and, if included, distance values
+     * Original matching hash (if requested)
     """
     signal = require_request_param("signal")
     signal_type_name = require_request_param("signal_type")
     include_distance = str_to_bool(request.args.get("include_distance", "false"))
+    include_matching_hash = str_to_bool(
+        request.args.get("include_matching_hash", "false")
+    )
     lookup_signal_func = (
         lookup_signal_with_distance if include_distance else lookup_signal
     )
+    banked_content_id = request.args.get("banked_content_id", None)
 
-    return {"matches": lookup_signal_func(signal, signal_type_name)}
+    response = {
+        "banked_content_id": banked_content_id,
+        "matches": lookup_signal_func(signal, signal_type_name),
+    }
+
+    if include_matching_hash:
+        response["matching_hash"] = {"signal": signal, "signal_type": signal_type_name}
+
+    return response
 
 
 def query_index(

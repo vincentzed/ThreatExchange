@@ -543,24 +543,10 @@ class DefaultOMMStore(interface.IUnifiedStore):
         query = query.filter(database.BankContent.id.in_(ids))
         bank_contents = query.all()
 
-        result = []
-        for bc in bank_contents:
-            content_config = bc.as_storage_iface_cls(include_signals=False)
-
-            if signal_type is not None:
-                # If there's matching signals, add them to the content config
-                content_config.signals = {}
-                matching_signals = [
-                    s for s in bc.signals if s.signal_type == signal_type
-                ]
-                if matching_signals:
-                    content_config.signals = {
-                        signal_type: matching_signals[0].signal_val
-                    }
-
-            result.append(content_config)
-
-        return result
+        return [
+                bc.as_storage_iface_cls(include_signals=(signal_type is not None))
+            for bc in bank_contents
+        ]
 
     def bank_content_update(self, val: interface.BankContentConfig) -> None:
         sesh = database.db.session

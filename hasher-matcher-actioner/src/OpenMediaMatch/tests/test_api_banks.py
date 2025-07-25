@@ -140,6 +140,7 @@ def test_bank_get_content(client: FlaskClient):
     assert get_response.status_code == 200, str(get_response.get_json())
     assert get_response.json
     assert get_response.json.get("id") == content_id
+    assert "signals" not in get_response.json
 
 
 def test_bank_get_content_404(client: FlaskClient):
